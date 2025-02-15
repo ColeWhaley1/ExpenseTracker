@@ -10,17 +10,46 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @Query private var dayExpenses: [DayExpenses]
+    
+    private var indexToStringDays: [String] = ["S", "M", "T", "W", "TH", "F", "S"]
 
     var body: some View {
-        VStack{
-            Text("Expense Tracker")
+        HStack{
+            ForEach(dayExpenses){ dayExpense in
+                VStack{
+                    Text(indexToStringDays[dayExpense.day])
+                    
+                }
+            }
+        }
+        .onAppear{
+            initializeDays()
+        }
+    }
+    
+    private func initializeDays(){
+        if(dayExpenses.isEmpty){
+            let initDays = [
+                DayExpenses(day: 0, expenses: []),
+                DayExpenses(day: 1, expenses: []),
+                DayExpenses(day: 2, expenses: []),
+                DayExpenses(day: 3, expenses: []),
+                DayExpenses(day: 4, expenses: []),
+                DayExpenses(day: 5, expenses: []),
+                DayExpenses(day: 6, expenses: []),
+            ]
+            for day in initDays{
+                modelContext.insert(day)
+            }
         }
     }
 
 }
 
+
+
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+        .modelContainer(for: DayExpenses.self, inMemory: true)
 }
