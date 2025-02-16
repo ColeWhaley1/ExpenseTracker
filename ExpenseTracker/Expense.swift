@@ -12,9 +12,9 @@ import SwiftData
 final class Expense {
     
     var title: String
-    var cost: Float
+    var cost: Double
     
-    init(title: String, cost: Float){
+    init(title: String, cost: Double){
         self.title = title
         self.cost = cost
     }

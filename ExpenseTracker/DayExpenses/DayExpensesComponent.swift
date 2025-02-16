@@ -4,7 +4,9 @@ import SwiftUI
 struct DayExpensesComponent: View {
     
     let day: Int
-    let expenses: [Expense]
+    @State var expenses: [Expense]
+    
+    @Environment(\.modelContext) private var modelContext
     
     private let dayLabel: [String] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     
@@ -41,6 +43,9 @@ struct DayExpensesComponent: View {
                         TextField("cost", text: $expenseCost)
                             .frame(maxWidth: 50, alignment: .trailing)
                             .multilineTextAlignment(.trailing)
+                            .onSubmit{
+                                    addExpense()
+                            }
                     }
                     .padding(10)
                 }
@@ -48,6 +53,21 @@ struct DayExpensesComponent: View {
                 .clipShape(RoundedRectangle(cornerRadius: 15))
             }
         }
+    }
+    
+    private func addExpense(){
+        guard !expenseTitle.isEmpty else { return }
+        guard !expenseCost.isEmpty else { return }
+        
+        guard let cost = Double(expenseCost) else { return }
+        
+        let expense = Expense(title: expenseTitle, cost: cost)
+        expenses.append(expense)
+        modelContext.insert(expense)
+        
+        expenseTitle = ""
+        expenseCost = ""
+        newExpenseInitiated = false
     }
     
     private func initiateNewExpense() {
