@@ -19,39 +19,62 @@ struct DayExpensesComponent: View {
             HStack {
                 Text(dayLabel[day])
                     .fontWeight(.bold)
+                    .frame(minWidth: 50)
+                    .padding(10)
+                    .background(Color.green)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .foregroundColor(Color.white)
                 
                 Spacer()
-            
-                Button(action: initiateNewExpense){
-                    Text("+")
+                
+                Button(action: newExpenseInitiated ? addExpense : toggleInitiateNewExpense){
+                    if(newExpenseInitiated){
+                        Text("Confirm")
+                    } else {
+                        Image(systemName: "plus")
+                    }
                 }
+
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
-            ForEach(expenses){ expense in
-                HStack{
-                    Text(expense.title)
-                    Text("$")
-                    Text(String(expense.cost))
-                }
-            }
             if(newExpenseInitiated){
-                HStack{
-                    HStack {
-                        TextField("What", text: $expenseTitle)
-                        Text("$")
-                        TextField("cost", text: $expenseCost)
-                            .frame(maxWidth: 50, alignment: .trailing)
-                            .multilineTextAlignment(.trailing)
-                            .onSubmit{
+                HStack {
+                    HStack{
+                        HStack {
+                            TextField("what", text: $expenseTitle)
+                                .onSubmit{
                                     addExpense()
-                            }
+                                }
+                            TextField("$", text: $expenseCost)
+                                .frame(maxWidth: 50, alignment: .trailing)
+                                .multilineTextAlignment(.trailing)
+                                .onSubmit{
+                                    addExpense()
+                                }
+                        }
+                        .padding(10)
                     }
-                    .padding(10)
+                    .background(Color.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                 
+                    Button(action: toggleInitiateNewExpense){
+                        Image(systemName: "multiply")
+                    }
                 }
-                .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 15))
             }
+            
+            VStack(spacing: 10){
+                ForEach(expenses){ expense in
+                    HStack{
+                        Text(expense.title)
+                        Spacer()
+                        Text("$\(expense.cost.truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", expense.cost) : String(format: "%.2f", expense.cost))")
+                    }
+                }
+            }
+            .padding(.vertical, (expenses.isEmpty) ? 10 : 20)
+
         }
     }
     
@@ -70,8 +93,8 @@ struct DayExpensesComponent: View {
         newExpenseInitiated = false
     }
     
-    private func initiateNewExpense() {
-        newExpenseInitiated = true
+    private func toggleInitiateNewExpense() {
+        newExpenseInitiated = !newExpenseInitiated
     }
 }
 

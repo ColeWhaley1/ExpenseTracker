@@ -13,35 +13,38 @@ struct ContentView: View {
     @Query(sort: \DayExpenses.day) private var dayExpenses: [DayExpenses]
 
     var body: some View {
-        VStack() {
-
-            Text("Expense Tracker")
-                .fontWeight(.bold)
-                .font(.largeTitle)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(20)
-                .foregroundColor(.green)
-
-            
-            HStack{
-                VStack{
-                    ForEach(dayExpenses){ dayExpense in
-                        HStack{
-                            DayExpensesComponent(day: dayExpense.day, expenses: dayExpense.expenses)
+        
+        ScrollView {
+            VStack() {
+                
+                Text("Expense Tracker")
+                    .fontWeight(.bold)
+                    .font(.largeTitle)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(20)
+                    .foregroundColor(.green)
+                
+                
+                HStack{
+                    VStack{
+                        ForEach(dayExpenses){ dayExpense in
+                            HStack{
+                                DayExpensesComponent(day: dayExpense.day, expenses: dayExpense.expenses)
+                            }
+                            .padding(5)
                         }
-                        .padding(5)
                     }
+                    .onAppear{
+                        initializeDays()
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(20.0)
+                    .background(Color("WeekBackground"))
+                    .cornerRadius(30.0)
                 }
-                .onAppear{
-                    initializeDays()
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(20.0)
-                .background(Color("WeekBackground"))
-                .cornerRadius(30.0)
+                .frame(maxWidth: UIScreen.main.bounds.width * 0.9)
+                
             }
-            .frame(maxWidth: UIScreen.main.bounds.width * 0.9)
-
         }
         
     }
