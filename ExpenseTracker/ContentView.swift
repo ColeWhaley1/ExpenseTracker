@@ -10,22 +10,40 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var dayExpenses: [DayExpenses]
-    
-    private var indexToStringDays: [String] = ["S", "M", "T", "W", "TH", "F", "S"]
+    @Query(sort: \DayExpenses.day) private var dayExpenses: [DayExpenses]
 
     var body: some View {
-        HStack{
-            ForEach(dayExpenses){ dayExpense in
+        VStack() {
+
+            Text("Expense Tracker")
+                .fontWeight(.bold)
+                .font(.largeTitle)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(20)
+                .foregroundColor(.green)
+
+            
+            HStack{
                 VStack{
-                    Text(indexToStringDays[dayExpense.day])
-                    
+                    ForEach(dayExpenses){ dayExpense in
+                        HStack{
+                            DayExpensesComponent(day: dayExpense.day, expenses: dayExpense.expenses)
+                        }
+                        .padding(5)
+                    }
                 }
+                .onAppear{
+                    initializeDays()
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(20.0)
+                .background(Color("WeekBackground"))
+                .cornerRadius(30.0)
             }
+            .frame(maxWidth: UIScreen.main.bounds.width * 0.9)
+
         }
-        .onAppear{
-            initializeDays()
-        }
+        
     }
     
     private func initializeDays(){
