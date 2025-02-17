@@ -74,3 +74,4 @@ struct ContentView: View {
     ContentView()
         .modelContainer(for: DayExpenses.self, inMemory: true)
 }
+

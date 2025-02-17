@@ -11,6 +11,7 @@ import SwiftData
 @Model
 final class Expense {
     
+    var id: UUID = UUID()
     var title: String
     var cost: Double
     
