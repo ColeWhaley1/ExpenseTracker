@@ -59,7 +59,7 @@ struct DayExpensesComponent: View {
                 HStack {
                     HStack{
                         HStack {
-                            TextField("what", text: $expenseTitle)
+                            TextField("expense", text: $expenseTitle)
                                 .padding()
                                 .onSubmit{
                                     addExpense()
@@ -69,8 +69,8 @@ struct DayExpensesComponent: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                             TextField("$", text: $expenseCost)
                                 .padding()
-                                .frame(maxWidth: 100, alignment: .trailing)
-                                .multilineTextAlignment(.center)
+                                .frame(maxWidth: 100, alignment: .leading)
+                                .multilineTextAlignment(.leading)
                                 .background(Color.white)
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                                 .onSubmit{
