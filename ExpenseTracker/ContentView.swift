@@ -41,6 +41,11 @@ struct ContentView: View {
                     .padding(20.0)
                     .background(Color("WeekBackground"))
                     .cornerRadius(30.0)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 30)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
+
                 }
                 .frame(maxWidth: UIScreen.main.bounds.width * 0.9)
                 
