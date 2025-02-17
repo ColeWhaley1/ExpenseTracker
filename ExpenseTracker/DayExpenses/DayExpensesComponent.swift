@@ -4,7 +4,7 @@ import SwiftUI
 struct DayExpensesComponent: View {
     
     let day: Int
-    @State var expenses: [Expense]
+    @Binding var expenses: [Expense]
     
     var sumCosts: Double {
         expenses.reduce(0, { total, expense in
