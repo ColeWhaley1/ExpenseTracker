@@ -10,7 +10,17 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \DayExpenses.day) private var dayExpenses: [DayExpenses]
+    @Query(sort: \DayExpenses.day) private var dayExpensesFetch: [DayExpenses]
+    @State private var weekExpenses: [DayExpenses] = []
+    
+    var weeklyCost: Double {
+        let dailyTotals = weekExpenses.map { dayExpenseList in
+            dayExpenseList.expenses.reduce(0) { total, expense in
+                total + expense.cost
+            }
+        }
+        return dailyTotals.reduce(0, +)
+    }
 
     var body: some View {
         
@@ -24,18 +34,36 @@ struct ContentView: View {
                     .padding(20)
                     .foregroundColor(.green)
                 
+                ExpenseBreakdown(weekExpenses: $weekExpenses)
+                
+                HStack{
+                    Text("Week Total")
+                        .padding(.leading, 20)
+                        .fontWeight(.semibold)
+                    Image(systemName: "arrow.right")
+                        .foregroundColor(Color.green)
+                    Text("$ \(weeklyCost.truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", weeklyCost) : String(format: "%.2f", weeklyCost))")
+                        .fontWeight(.bold)
+                    
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .font(.title2)
+                
                 
                 HStack{
                     VStack{
-                        ForEach(dayExpenses){ dayExpense in
-                            HStack{
-                                DayExpensesComponent(day: dayExpense.day, expenses: dayExpense.expenses)
+                        ForEach(weekExpenses.indices, id: \.self) { index in
+                            HStack {
+                                DayExpensesComponent(day: weekExpenses[index].day, expenses: $weekExpenses[index].expenses)
                             }
-                            .padding(5)
                         }
                     }
                     .onAppear{
                         initializeDays()
+                        weekExpenses = dayExpensesFetch
+                    }
+                    .onChange(of: dayExpensesFetch) {
+                        weekExpenses = dayExpensesFetch
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(20.0)
@@ -55,8 +83,8 @@ struct ContentView: View {
     }
     
     private func initializeDays(){
-        if(dayExpenses.isEmpty){
-            let initDays = [
+        if(weekExpenses.isEmpty){
+            let initDays: [DayExpenses] = [
                 DayExpenses(day: 0, expenses: []),
                 DayExpenses(day: 1, expenses: []),
                 DayExpenses(day: 2, expenses: []),
