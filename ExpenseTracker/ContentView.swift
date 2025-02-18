@@ -12,6 +12,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \DayExpenses.day) private var dayExpensesFetch: [DayExpenses]
     @State private var weekExpenses: [DayExpenses] = []
+    @State var budget: String = "0"
     
     var weeklyCost: Double {
         let dailyTotals = weekExpenses.map { dayExpenseList in
@@ -34,7 +35,9 @@ struct ContentView: View {
                     .padding(20)
                     .foregroundColor(.green)
                 
-                ExpenseBreakdown(weekExpenses: $weekExpenses)
+                BudgetComponent(budget: $budget)
+                
+                ExpenseBreakdown(weekExpenses: $weekExpenses, budget: $budget)
                 
                 HStack{
                     Text("Week Total")

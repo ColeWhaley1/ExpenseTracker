@@ -68,6 +68,7 @@ struct DayExpensesComponent: View {
                                 .background(Color.white)
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                             TextField("$", text: $expenseCost)
+                                .keyboardType(.decimalPad)
                                 .padding()
                                 .frame(maxWidth: 100, alignment: .leading)
                                 .multilineTextAlignment(.leading)
