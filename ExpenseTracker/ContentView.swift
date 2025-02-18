@@ -11,10 +11,10 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \DayExpenses.day) private var dayExpensesFetch: [DayExpenses]
-    @State private var dayExpenses: [DayExpenses] = []
+    @State private var weekExpenses: [DayExpenses] = []
     
     var weeklyCost: Double {
-        let dailyTotals = dayExpenses.map { dayExpenseList in
+        let dailyTotals = weekExpenses.map { dayExpenseList in
             dayExpenseList.expenses.reduce(0) { total, expense in
                 total + expense.cost
             }
@@ -34,6 +34,8 @@ struct ContentView: View {
                     .padding(20)
                     .foregroundColor(.green)
                 
+                ExpenseBreakdown(weekExpenses: $weekExpenses)
+                
                 HStack{
                     Text("Week Total")
                         .padding(.leading, 20)
@@ -50,18 +52,18 @@ struct ContentView: View {
                 
                 HStack{
                     VStack{
-                        ForEach(dayExpenses.indices, id: \.self) { index in
+                        ForEach(weekExpenses.indices, id: \.self) { index in
                             HStack {
-                                DayExpensesComponent(day: dayExpenses[index].day, expenses: $dayExpenses[index].expenses)
+                                DayExpensesComponent(day: weekExpenses[index].day, expenses: $weekExpenses[index].expenses)
                             }
                         }
                     }
                     .onAppear{
                         initializeDays()
-                        dayExpenses = dayExpensesFetch
+                        weekExpenses = dayExpensesFetch
                     }
                     .onChange(of: dayExpensesFetch) {
-                        dayExpenses = dayExpensesFetch
+                        weekExpenses = dayExpensesFetch
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(20.0)
@@ -81,7 +83,7 @@ struct ContentView: View {
     }
     
     private func initializeDays(){
-        if(dayExpenses.isEmpty){
+        if(weekExpenses.isEmpty){
             let initDays: [DayExpenses] = [
                 DayExpenses(day: 0, expenses: []),
                 DayExpenses(day: 1, expenses: []),
