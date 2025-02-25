@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct BudgetComponent: View {
     
-    @Binding var budget: String
+    @Environment(\.modelContext) private var modelContext
+    @Query var budgetFetch: [Budget]
+    @Binding var budgetAmount: String
     
     var body: some View {
         HStack{
@@ -19,9 +22,12 @@ struct BudgetComponent: View {
             
             HStack {
                 Text("$")
-                TextField("", text: $budget)
+                TextField("", text: $budgetAmount)
                     .multilineTextAlignment(.center)
                     .padding(.trailing, 12)
+                    .onChange(of: budgetAmount) {
+                        updateBudget(newBudget: budgetAmount)
+                    }
             }
             .keyboardType(.decimalPad)
             .foregroundColor(.orange)
@@ -33,5 +39,25 @@ struct BudgetComponent: View {
         }
         .fontWeight(.semibold)
         .font(.title2)
+        .onAppear{
+            loadBudget()
+        }
+    }
+    
+    private func loadBudget(){
+        if let loadedBudget = budgetFetch.first {
+            budgetAmount = String(loadedBudget.amount)
+        } else {
+            let newBudget = Budget(amount: 0)
+            modelContext.insert(newBudget)
+            budgetAmount = "0"
+        }
+    }
+    
+    private func updateBudget(newBudget: String){
+        if let newBudgetDouble = Double(newBudget), let currBudget = budgetFetch.first {
+            currBudget.amount = newBudgetDouble
+            try? modelContext.save()
+        }
     }
 }
