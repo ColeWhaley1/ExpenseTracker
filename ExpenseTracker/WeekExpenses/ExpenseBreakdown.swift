@@ -10,7 +10,7 @@ import Charts
 
 struct ExpenseBreakdown: View {
     @Binding var weekExpenses: [DayExpenses]
-    @Binding var budget: String
+    @Binding var budgetAmount: String
     
     private let dayLabel: [String] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     
@@ -26,7 +26,7 @@ struct ExpenseBreakdown: View {
     }
     
     var budgetValue: Double {
-        Double(budget) ?? 0
+        Double(budgetAmount) ?? 0
     }
     
     var body: some View {

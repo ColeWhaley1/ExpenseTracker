@@ -10,9 +10,10 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \DayExpenses.day) private var dayExpensesFetch: [DayExpenses]
+    @Query(sort: \DayExpenses.day) private var weekExpensesFetch: [DayExpenses]
+    
     @State private var weekExpenses: [DayExpenses] = []
-    @State var budget: String = "0"
+    @State var budgetAmount: String = "0"
     
     var weeklyCost: Double {
         let dailyTotals = weekExpenses.map { dayExpenseList in
@@ -35,9 +36,9 @@ struct ContentView: View {
                     .padding(20)
                     .foregroundColor(.green)
                 
-                BudgetComponent(budget: $budget)
+                BudgetComponent(budgetAmount: $budgetAmount)
                 
-                ExpenseBreakdown(weekExpenses: $weekExpenses, budget: $budget)
+                ExpenseBreakdown(weekExpenses: $weekExpenses, budgetAmount: $budgetAmount)
                 
                 HStack{
                     Text("Week Total")
@@ -63,11 +64,12 @@ struct ContentView: View {
                     }
                     .onAppear{
                         initializeDays()
-                        weekExpenses = dayExpensesFetch
+                        weekExpenses = weekExpensesFetch
                     }
-                    .onChange(of: dayExpensesFetch) {
-                        weekExpenses = dayExpensesFetch
+                    .onChange(of: weekExpensesFetch) {
+                        weekExpenses = weekExpensesFetch
                     }
+
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(20.0)
                     .background(Color("WeekBackground"))
@@ -86,7 +88,7 @@ struct ContentView: View {
     }
     
     private func initializeDays(){
-        if(weekExpenses.isEmpty){
+        if(weekExpensesFetch.isEmpty){
             let initDays: [DayExpenses] = [
                 DayExpenses(day: 0, expenses: []),
                 DayExpenses(day: 1, expenses: []),
