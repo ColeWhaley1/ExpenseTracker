@@ -56,7 +56,7 @@ struct ExpenseBreakdown: View {
         }
         .padding(20)
         .chartXScale(domain: dayLabel)
-        .chartYScale(domain: 0...max((maxTotalDay?.total ?? 0) + 300, budgetValue + 50))
+        .chartYScale(domain: 0...max((maxTotalDay?.total ?? 0) + 100, floor(budgetValue/7) + 100))
         .frame(minHeight: 150)
     }
 }

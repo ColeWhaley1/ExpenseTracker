@@ -13,6 +13,7 @@ struct BudgetComponent: View {
     @Environment(\.modelContext) private var modelContext
     @Query var budgetFetch: [Budget]
     @Binding var budgetAmount: String
+    @FocusState private var isBudgetFocused: Bool
     
     var body: some View {
         HStack{
@@ -28,6 +29,7 @@ struct BudgetComponent: View {
                     .onChange(of: budgetAmount) {
                         updateBudget(newBudget: budgetAmount)
                     }
+                    .focused($isBudgetFocused)
             }
             .keyboardType(.decimalPad)
             .foregroundColor(.orange)
@@ -35,8 +37,13 @@ struct BudgetComponent: View {
             .frame(width: 130)
             .background(Color(.orange.opacity(0.1)))
             .clipShape(RoundedRectangle(cornerRadius: 15))
+            .onTapGesture {
+                isBudgetFocused = true
+            }
             
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 20)
         .fontWeight(.semibold)
         .font(.title2)
         .onAppear{
